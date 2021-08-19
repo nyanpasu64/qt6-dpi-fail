@@ -4,11 +4,20 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QDebug>
-#include <QScreen>
-#include <QWindow>
+#include <QMetaEnum>
+
+template<typename EnumT>
+QString stringify(const EnumT value)
+{
+  return QMetaEnum::fromType<EnumT>().valueToKey((int) value);
+}
 
 int main(int argc, char *argv[])
 {
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor
+    );
+    qDebug() << QGuiApplication::highDpiScaleFactorRoundingPolicy();
     QApplication a(argc, argv);
     QWidget c;
 
@@ -16,20 +25,16 @@ int main(int argc, char *argv[])
     c.setLayout(l);
     l->setSizeConstraint(QLayout::SetFixedSize);
 
-    auto w = new QPushButton("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+    auto w = new QPushButton("Query devicePixelRatio()");
     l->addWidget(w);
     w->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     c.show();
 
     QObject::connect(w, &QPushButton::pressed, w, [w]() {
-        qDebug() << w->sizeHint();
-    });
-    auto window = w->nativeParentWidget()->windowHandle();
-    if (!window) {
-        throw "up";
-    }
-    QObject::connect(window, &QWindow::screenChanged, window, [window]() {
-        qDebug() << window->screen()->logicalDotsPerInch();
+        w->setText(QString("%1 -> %2")
+            .arg(stringify(QGuiApplication::highDpiScaleFactorRoundingPolicy()))
+            .arg(w->devicePixelRatio())
+        );
     });
 
     return a.exec();
