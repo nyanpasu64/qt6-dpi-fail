@@ -1,10 +1,11 @@
 #include <QWidget>
 
+#include <QListWidget>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include <QApplication>
 #include <QDebug>
-#include <QListWidget>
 #include <QMouseEvent>
 
 class FindWidgetClicked : public QObject
@@ -47,6 +48,10 @@ int main(int argc, char *argv[])
 
     {
         auto w = new QListWidget;
+        l->addWidget(w);
+    }
+    {
+        auto w = new QPushButton;
         l->addWidget(w);
     }
 
