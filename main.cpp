@@ -21,7 +21,7 @@ bool FindWidgetClicked::eventFilter(QObject *obj, QEvent *event)
 
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
-        auto p = QPoint(e->x(), e->y());
+        auto p = e->pos();
 
         while (auto child = w->childAt(p)) {
             w = child;
