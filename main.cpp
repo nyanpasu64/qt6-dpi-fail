@@ -14,6 +14,8 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
+int old_y = 0;
+
 bool FindWidgetClicked::eventFilter(QObject *obj, QEvent *event)
 {
     auto w = qobject_cast<QWidget *>(obj);
@@ -21,7 +23,8 @@ bool FindWidgetClicked::eventFilter(QObject *obj, QEvent *event)
 
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
-        auto p = QPoint(e->x(), e->y());
+        auto p = QPoint(e->x(), old_y);
+        old_y = e->y();
 
         while (auto child = w->childAt(p)) {
             w = child;
