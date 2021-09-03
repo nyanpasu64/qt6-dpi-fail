@@ -16,19 +16,9 @@ protected:
 
 bool FindWidgetClicked::eventFilter(QObject *obj, QEvent *event)
 {
-    auto w = qobject_cast<QWidget *>(obj);
-    if (!w) throw "up";
-
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
-        auto p = QPoint(e->x(), e->y());
-
-        while (auto child = w->childAt(p)) {
-            w = child;
-            p -= w->geometry().topLeft();
-        }
-
-        qDebug() << w;
+        qDebug() << QApplication::widgetAt(e->globalPos());
         return true;
     } else {
         return QObject::eventFilter(obj, event);
@@ -38,10 +28,10 @@ bool FindWidgetClicked::eventFilter(QObject *obj, QEvent *event)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QWidget c;
-
     FindWidgetClicked filter;
-    c.installEventFilter(&filter);
+    a.installEventFilter(&filter);
+
+    QWidget c;
 
     auto l = new QVBoxLayout;
     c.setLayout(l);
