@@ -7,6 +7,16 @@
 #include <QApplication>
 #include <QDebug>
 
+struct MySpinBox : QSpinBox {
+    void stepBy(int steps) override {
+        qDebug() << hasFocus();
+        QSpinBox::stepBy(steps);
+        if (!hasFocus()) {
+            lineEdit()->deselect();
+        }
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -17,12 +27,11 @@ int main(int argc, char *argv[])
     c.setLayout(l);
 
     {
-        auto w = new QSpinBox;
-        w->setFocusPolicy(Qt::StrongFocus);
+        auto w = new MySpinBox;
         l->addWidget(w);
     }
     {
-        auto w = new QSpinBox;
+        auto w = new MySpinBox;
         w->setFocusPolicy(Qt::StrongFocus);
         l->addWidget(w);
     }
